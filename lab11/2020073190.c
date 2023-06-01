@@ -30,9 +30,9 @@ int main(int argc, char *argv[]){
 	int solution, TableSize;
 
 	fscanf(fin, "%s", solution_str);
-	if(!strcmp(solution_str, "linear") || !strcmp(solution_str, "Linear"))
+	if(!strcmp(solution_str, "linear"))
 		solution = 1;
-	else if(!strcmp(solution_str, "quadratic") || !strcmp(solution_str, "Quadratic"))
+	else if(!strcmp(solution_str, "quadratic"))
 		solution = 2;
 	else{
 		fprintf(fout, "Error: Invalid hashing solution!");
@@ -110,14 +110,14 @@ void Insert(HashTable H, ElementType Key, int solution)
 			j++;
 	if (j == 0)
 	{
-		fprintf(fout, "Insertion error: table is full\n");
+		fprintf(fout, "insertion error : table is full\n");
 		return;
 	}
 	// then make sure that key is not in the table
 	if (Find(H, Key, solution))
 	{
 		for (i = 0; i < H->TableSize; ++i)
-			if (H->TheLists[i] == Key) fprintf(fout, "Insertion error: %d already exists at address %d\n", Key, i);
+			if (H->TheLists[i] == Key) fprintf(fout, "insertion error : %d already exists at address %d\n", Key, i);
 		return;
 	}else
 	// then insert key by solution type
@@ -126,8 +126,14 @@ void Insert(HashTable H, ElementType Key, int solution)
 		if (solution == 1)
 		{
 			while (H->TheLists[(Key + i) % H->TableSize] != 0)
+			{
 				i++; 
-				//hi = (solution == 1) ? (hi + (++i)) % H->TableSize : (hi + (++i)*(i)) % H->TableSize;
+				if (i >= H->TableSize)
+				{
+					fprintf(fout, "insertion error : table is full\n");
+					return;
+				}
+			}	
 		}else if (solution == 2)
 		{
 			j = 0;
@@ -135,11 +141,16 @@ void Insert(HashTable H, ElementType Key, int solution)
 			{
 				j++;
 				i = j*j;
+				if (j >= H->TableSize)
+				{
+					fprintf(fout, "insertion error : table is full\n");
+					return;
+				}
 			}
 		}
 		hi = (Key + i) % H->TableSize;
 		H->TheLists[hi] = Key;
-		fprintf(fout, "Insert %d into address %d\n", Key, hi);
+		fprintf(fout, "insert %d into address %d\n", Key, hi);
 		return;
 	}
 }
@@ -154,7 +165,7 @@ void Delete(HashTable H, ElementType Key, int solution)
 	// make sure that table is not empty
 	if (H == NULL || H->TableSize == 0 || H->TheLists == NULL) 
 	{
-		fprintf(fout, "Deletion error: NULL Exception\n"); 
+		fprintf(fout, "deletion error : NULL Exception\n"); 
 		return;
 	}else
 	{
@@ -165,7 +176,7 @@ void Delete(HashTable H, ElementType Key, int solution)
 				// make sure that key is found
 				if (!Find(H, Key, solution)) 
 				{
-					fprintf(fout, "Deletion error: %d is not in the table\n", Key); 
+					fprintf(fout, "deletion error : %d is not in the table\n", Key); 
 					return;
 				}else
 				// then delete the key in the table
@@ -175,7 +186,7 @@ void Delete(HashTable H, ElementType Key, int solution)
 					return;
 				}
 			}
-		fprintf(fout, "Deletion error: Empty Table Exception\n");
+		fprintf(fout, "deletion error : Empty Table Exception\n");
 		return;
 	}
 }
